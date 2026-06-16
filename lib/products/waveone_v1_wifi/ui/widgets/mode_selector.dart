@@ -9,20 +9,21 @@ class ModeData {
   const ModeData({required this.label, required this.icon});
 }
 
-class ModeSelector extends StatefulWidget {
-  const ModeSelector({super.key});
+class ModeSelector extends StatelessWidget {
+  final String currentMode;
+  final bool isExpanded;
+  final ValueChanged<String> onModeSelected;
+  final VoidCallback onToggleExpand;
 
-  @override
-  State<ModeSelector> createState() => _ModeSelectorState();
-}
-
-class _ModeSelectorState extends State<ModeSelector> {
-  // TODO: Refactor activeMode to be injected via BlocBuilder
-  String _activeMode = 'AUX1';
-  bool _isExpanded = false;
+  const ModeSelector({
+    super.key,
+    required this.currentMode,
+    required this.isExpanded,
+    required this.onModeSelected,
+    required this.onToggleExpand,
+  });
 
   // --- Static Configuration ---
-  // Mapped from Expo vector icons to standard Flutter Material Icons
   static const List<ModeData> modesData = [
     ModeData(label: 'AUX1', icon: Icons.cable),
     ModeData(label: 'AUX2', icon: Icons.settings_input_component),
@@ -31,28 +32,17 @@ class _ModeSelectorState extends State<ModeSelector> {
     ModeData(label: '5.1 Analogue', icon: Icons.surround_sound),
   ];
 
-  void _toggleExpand() {
-    setState(() {
-      _isExpanded = !_isExpanded;
-    });
-  }
-
-  void _selectMode(String mode) {
-    setState(() {
-      _activeMode = mode;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final themeColors = theme.colorScheme;
     final colors = theme.extension<AppColorsExtension>()!;
 
-    final Color cardColor = colors.modalBackground;
-    final Color borderColor = theme.colorScheme.surfaceContainerHighest;
-    final Color textColor = theme.colorScheme.onSurface;
-    final Color primaryColor = theme.colorScheme.primary;
-    final Color inactiveColor = colors.textMuted;
+    final Color cardColor = theme.cardColor;
+    final Color borderColor = themeColors.surfaceContainerHighest;
+    final Color textColor = themeColors.onSurface;
+    final Color primaryColor = themeColors.primary;
+    final Color inactiveColor = colors.inactiveTint;
 
     return Container(
       margin: const EdgeInsets.only(top: 20, left: 16, right: 16, bottom: 20),
@@ -67,7 +57,7 @@ class _ModeSelectorState extends State<ModeSelector> {
         children: [
           // --- Header Section ---
           GestureDetector(
-            onTap: _toggleExpand,
+            onTap: onToggleExpand,
             behavior: HitTestBehavior.opaque,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -83,7 +73,7 @@ class _ModeSelectorState extends State<ModeSelector> {
                     ),
                   ),
                   Icon(
-                    _isExpanded ? Icons.expand_less : Icons.expand_more,
+                    isExpanded ? Icons.expand_less : Icons.expand_more,
                     size: 24,
                     color: textColor,
                   ),
@@ -93,7 +83,7 @@ class _ModeSelectorState extends State<ModeSelector> {
           ),
 
           // --- Collapsible Content Section ---
-          if (_isExpanded)
+          if (isExpanded)
             Container(
               decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: borderColor, width: 1)),
@@ -107,10 +97,10 @@ class _ModeSelectorState extends State<ModeSelector> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: modesData.map((modeItem) {
-                    final bool isSelected = modeItem.label == _activeMode;
+                    final bool isSelected = modeItem.label == currentMode;
 
                     return GestureDetector(
-                      onTap: () => _selectMode(modeItem.label),
+                      onTap: () => onModeSelected(modeItem.label),
                       behavior: HitTestBehavior.opaque,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),

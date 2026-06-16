@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:waveone/core/theme/app_theme.dart';
-import 'package:waveone/core/theme/responsive_layout.dart';
 import 'package:waveone/core/widgets/attenuation_modal.dart';
-import 'package:waveone/core/widgets/Knob.dart';
+import 'package:waveone/core/widgets/device_info_modal.dart';
+import 'package:waveone/core/widgets/help_modal.dart';
 import 'package:waveone/core/widgets/preset_modal.dart';
 import 'package:waveone/core/widgets/remote_modal.dart';
-import 'package:waveone/core/widgets/global_settings_drawer.dart';
-import 'package:waveone/products/waveone_v1_wifi/ui/widgets/mode_selector.dart';
+import 'package:waveone/products/waveone_v1_wifi/ui/control_dashboard_view.dart';
+import 'package:waveone/products/waveone_v1_wifi/ui/device_connect_screen.dart';
+import 'package:waveone/products/waveone_v1_wifi/ui/main_navigation_shell.dart';
 
 class WaveOneDashboard extends StatefulWidget {
   const WaveOneDashboard({super.key});
@@ -16,24 +17,97 @@ class WaveOneDashboard extends StatefulWidget {
 }
 
 class _WaveOneDashboardState extends State<WaveOneDashboard> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
 
-  double _mainVolumeAngle = 0.0;
+  // Connection Mock State
+  ConnectionMode _connectionMode = ConnectionMode.wifi;
+  final List<DeviceUIModel> _availableDevices = [
+    const DeviceUIModel(
+      id: '1',
+      modelName: 'WaveOne PV',
+      deviceCode: 'W1-PV-1234',
+      ipAddress: '192.168.1.100',
+      isConnected: false,
+    ),
+  ];
+
+  // Control Dashboard Mock State
+  String _activeMode = 'Music';
+  bool _isModeExpanded = false;
+  double _mainVolAngle = 40.0;
+  double _subVolAngle = -5.0;
+
+  // Attenuation Mock State
   double _frontLeftAngle = 0.0;
   double _frontRightAngle = 0.0;
   double _centerAngle = 0.0;
   double _rearLeftAngle = 0.0;
   double _rearRightAngle = 0.0;
 
-  // ... (rest of the methods)
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  // TODO: Refactor knob state/modal triggers to use WaveOneBloc.
+
+  void _onOpenAttenuation() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        final isDark = theme.brightness == Brightness.dark;
+        final colors = theme.extension<AppColorsExtension>()!;
+
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return AttenuationModal(
+              onClose: () => Navigator.pop(context),
+              backgroundColor: theme.cardColor,
+              textColor: theme.colorScheme.onSurface,
+              iconColor: theme.iconTheme.color ?? colors.textMuted,
+              isDarkTheme: isDark,
+              frontLeftAngle: _frontLeftAngle,
+              frontLeftText: "${_frontLeftAngle.toInt()} dB",
+              onFrontLeftTurned: (newAngle, _) {
+                setModalState(() => _frontLeftAngle = newAngle);
+                setState(() => _frontLeftAngle = newAngle);
+              },
+              frontRightAngle: _frontRightAngle,
+              frontRightText: "${_frontRightAngle.toInt()} dB",
+              onFrontRightTurned: (newAngle, _) {
+                setModalState(() => _frontRightAngle = newAngle);
+                setState(() => _frontRightAngle = newAngle);
+              },
+              centerAngle: _centerAngle,
+              centerText: "${_centerAngle.toInt()} dB",
+              onCenterTurned: (newAngle, _) {
+                setModalState(() => _centerAngle = newAngle);
+                setState(() => _centerAngle = newAngle);
+              },
+              rearLeftAngle: _rearLeftAngle,
+              rearLeftText: "${_rearLeftAngle.toInt()} dB",
+              onRearLeftTurned: (newAngle, _) {
+                setModalState(() => _rearLeftAngle = newAngle);
+                setState(() => _rearLeftAngle = newAngle);
+              },
+              rearRightAngle: _rearRightAngle,
+              rearRightText: "${_rearRightAngle.toInt()} dB",
+              onRearRightTurned: (newAngle, _) {
+                setModalState(() => _rearRightAngle = newAngle);
+                setState(() => _rearRightAngle = newAngle);
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
-  void _showRemoteModal() {
+  void _onOpenPresets() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => const PresetModal(),
+    );
+  }
+
+  void _onOpenRemote() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -64,217 +138,84 @@ class _WaveOneDashboardState extends State<WaveOneDashboard> {
     );
   }
 
-  void _showModeSelector() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => const ModeSelector(),
-    );
-  }
-
-  void _showPresetModal() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => const PresetModal(),
-    );
-  }
-
-  List<Widget> _buildAppBarActions() {
-    return [
-      if (_selectedIndex == 0) ...[
-        IconButton(
-          key: const ValueKey('remote_trigger'),
-          icon: const Icon(Icons.settings_remote),
-          tooltip: 'Remote Control',
-          onPressed: _showRemoteModal,
-        ),
-        IconButton(
-          key: const ValueKey('mode_trigger'),
-          icon: const Icon(Icons.settings_input_component),
-          tooltip: 'Mode Selector',
-          onPressed: _showModeSelector,
-        ),
-        IconButton(
-          key: const ValueKey('preset_trigger'),
-          icon: const Icon(Icons.queue_music),
-          tooltip: 'Presets',
-          onPressed: _showPresetModal,
-        ),
-      ],
-      if (_selectedIndex == 1)
-        IconButton(
-          key: const ValueKey('preset_trigger_eq'),
-          icon: const Icon(Icons.queue_music),
-          tooltip: 'Presets',
-          onPressed: _showPresetModal,
-        ),
-    ];
-  }
-
-  Widget _buildDeviceControlView(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final colors = theme.extension<AppColorsExtension>()!;
-
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
-          Knob(
-            size: 200.0,
-            label: 'Volume',
-            valueText: _mainVolumeAngle.toStringAsFixed(2),
-            currentAngle: _mainVolumeAngle,
-            isDarkTheme: isDark,
-            iconColor: theme.colorScheme.onSurface,
-            textMutedColor: colors.textMuted,
-            onKnobTurned: (double newAngle, int newIndex) {
-              setState(() {
-                _mainVolumeAngle = newAngle;
-              });
-            },
-          ),
-          const SizedBox(height: 40),
-          AttenuationModal(
-            onClose: () {},
-            backgroundColor: theme.cardColor,
-            textColor: theme.colorScheme.onSurface,
-            iconColor: theme.iconTheme.color ?? colors.textMuted,
-            isDarkTheme: isDark,
-            frontLeftAngle: _frontLeftAngle,
-            frontLeftText: "${_frontLeftAngle.toInt()} dB",
-            onFrontLeftTurned: (newAngle, _) {
-              setState(() {
-                _frontLeftAngle = newAngle;
-              });
-            },
-            frontRightAngle: _frontRightAngle,
-            frontRightText: "${_frontRightAngle.toInt()} dB",
-            onFrontRightTurned: (newAngle, _) {
-              setState(() {
-                _frontRightAngle = newAngle;
-              });
-            },
-            centerAngle: _centerAngle,
-            centerText: "${_centerAngle.toInt()} dB",
-            onCenterTurned: (newAngle, _) {
-              setState(() {
-                _centerAngle = newAngle;
-              });
-            },
-            rearLeftAngle: _rearLeftAngle,
-            rearLeftText: "${_rearLeftAngle.toInt()} dB",
-            onRearLeftTurned: (newAngle, _) {
-              setState(() {
-                _rearLeftAngle = newAngle;
-              });
-            },
-            rearRightAngle: _rearRightAngle,
-            rearRightText: "${_rearRightAngle.toInt()} dB",
-            onRearRightTurned: (newAngle, _) {
-              setState(() {
-                _rearRightAngle = newAngle;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSelectedView(BuildContext context) {
+  Widget _buildChild() {
     switch (_selectedIndex) {
       case 0:
-        return _buildDeviceControlView(context);
+        return DeviceConnectScreen(
+          availableDevices: _availableDevices,
+          activeMode: _connectionMode,
+          isScanning: false,
+          onModeChanged: (mode) {
+            setState(() {
+              _connectionMode = mode;
+            });
+          },
+          onDeviceSelected: (device) {},
+          // TODO: Refactor DeviceInfo state and network metadata to listen to WaveOneBloc.
+          onOpenInfo: () {
+            showDialog(
+              context: context,
+              builder: (context) => const DeviceInfoModal(),
+            );
+          },
+          onOpenHelp: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (context) => const HelpModal(),
+            );
+          },
+        );
       case 1:
-        return const Center(child: Text("Equalizer View"));
+        return ControlDashboardView(
+          activeMode: _activeMode,
+          isModeExpanded: _isModeExpanded,
+          mainVolAngle: _mainVolAngle,
+          mainVolText: _mainVolAngle.toInt().toString(),
+          subVolAngle: _subVolAngle,
+          subVolText: _subVolAngle.toInt().toString(),
+          onMainVolTurned: (newAngle, newIndex) {
+            setState(() {
+              _mainVolAngle = newAngle;
+            });
+          },
+          onSubVolTurned: (newAngle, newIndex) {
+            setState(() {
+              _subVolAngle = newAngle;
+            });
+          },
+          onModeSelected: (mode) {
+            setState(() {
+              _activeMode = mode;
+              _isModeExpanded = false;
+            });
+          },
+          onToggleModeExpand: () {
+            setState(() {
+              _isModeExpanded = !_isModeExpanded;
+            });
+          },
+          onOpenAttenuation: _onOpenAttenuation,
+          onOpenPresets: _onOpenPresets,
+          onOpenRemote: _onOpenRemote,
+        );
       case 2:
-        return const Center(child: Text("Settings View"));
+        return Container(child: const Center(child: Text('DSP View')));
       default:
-        return const Center(child: Text("Unknown View"));
+        return const SizedBox.shrink();
     }
-  }
-
-  Widget _buildMobileLayout() {
-    return _buildSelectedView(context);
-  }
-
-  Widget _buildDesktopLayout() {
-    return Row(
-      children: [
-        NavigationRail(
-          selectedIndex: _selectedIndex,
-          onDestinationSelected: _onItemTapped,
-          labelType: NavigationRailLabelType.all,
-          destinations: const [
-            NavigationRailDestination(
-              icon: Icon(Icons.tune),
-              label: Text('Device Control'),
-            ),
-            NavigationRailDestination(
-              icon: Icon(Icons.graphic_eq),
-              label: Text('Equalizer'),
-            ),
-            NavigationRailDestination(
-              icon: Icon(Icons.settings),
-              label: Text('Settings'),
-            ),
-          ],
-          trailing: Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: IconButton(
-                  icon: const Icon(Icons.menu),
-                  tooltip: 'Global Settings',
-                  onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
-                ),
-              ),
-            ),
-          ),
-        ),
-        const VerticalDivider(thickness: 1, width: 1),
-        Expanded(child: _buildSelectedView(context)),
-      ],
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isMobile = constraints.maxWidth < 800;
-        return Scaffold(
-          key: _scaffoldKey,
-          appBar: AppBar(
-            title: const Text('WaveOne V1'),
-            actions: _buildAppBarActions(),
-          ),
-          endDrawer: const GlobalSettingsDrawer(),
-          body: isMobile ? _buildMobileLayout() : _buildDesktopLayout(),
-          bottomNavigationBar: isMobile
-              ? BottomNavigationBar(
-                  currentIndex: _selectedIndex,
-                  onTap: _onItemTapped,
-                  items: const [
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.tune),
-                      label: 'Device Control',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.graphic_eq),
-                      label: 'Equalizer',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.settings),
-                      label: 'Settings',
-                    ),
-                  ],
-                )
-              : null,
-        );
+    return MainNavigationShell(
+      selectedIndex: _selectedIndex,
+      onTabSelected: (index) {
+        setState(() {
+          _selectedIndex = index;
+        });
       },
+      child: _buildChild(),
     );
   }
 }
