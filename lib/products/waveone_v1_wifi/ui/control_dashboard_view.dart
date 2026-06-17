@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:waveone/core/theme/app_theme.dart';
 import 'package:waveone/core/theme/responsive_layout.dart';
 import 'package:waveone/core/widgets/Knob.dart';
-import 'package:waveone/products/waveone_v1_wifi/ui/widgets/mode_selector.dart';
+import 'package:waveone/core/widgets/mode_selector.dart';
 
 class ControlDashboardView extends StatelessWidget {
   // --- UI State ---
@@ -81,7 +81,9 @@ class ControlDashboardView extends StatelessWidget {
                 maxVal: 80,
                 step: 1,
                 dialBaseImage: const AssetImage('assets/images/dial-base.png'),
-                indicatorImage: const AssetImage('assets/images/dial-indicator-red.png'),
+                indicatorImage: const AssetImage(
+                  'assets/images/dial-indicator-red.png',
+                ),
                 isDarkTheme: true,
                 iconColor: themeColors.onSurface,
                 textMutedColor: colors.textMuted,
@@ -104,7 +106,9 @@ class ControlDashboardView extends StatelessWidget {
                 maxVal: 0,
                 step: 1,
                 dialBaseImage: const AssetImage('assets/images/dial-base.png'),
-                indicatorImage: const AssetImage('assets/images/knob-indicator.png'),
+                indicatorImage: const AssetImage(
+                  'assets/images/knob-indicator.png',
+                ),
                 isDarkTheme: true,
                 iconColor: themeColors.onSurface,
                 textMutedColor: colors.textMuted,
@@ -129,9 +133,27 @@ class ControlDashboardView extends StatelessWidget {
                 spacing: 12,
                 runSpacing: 12,
                 children: [
-                  _buildModalButton(context, "Attenuation", Icons.tune, themeColors, onOpenAttenuation),
-                  _buildModalButton(context, "Presets", Icons.save_alt, themeColors, onOpenPresets),
-                  _buildModalButton(context, "Remote", Icons.settings_remote, themeColors, onOpenRemote),
+                  _buildModalButton(
+                    context,
+                    "Attenuation",
+                    Icons.tune,
+                    themeColors,
+                    onOpenAttenuation,
+                  ),
+                  _buildModalButton(
+                    context,
+                    "Presets",
+                    Icons.save_alt,
+                    themeColors,
+                    onOpenPresets,
+                  ),
+                  _buildModalButton(
+                    context,
+                    "Remote",
+                    Icons.settings_remote,
+                    themeColors,
+                    onOpenRemote,
+                  ),
                 ],
               ),
             ),
@@ -170,7 +192,9 @@ class ControlDashboardView extends StatelessWidget {
               maxVal: 80,
               step: 1,
               dialBaseImage: const AssetImage('assets/images/dial-base.png'),
-              indicatorImage: const AssetImage('assets/images/dial-indicator-red.png'),
+              indicatorImage: const AssetImage(
+                'assets/images/dial-indicator-red.png',
+              ),
               isDarkTheme: true,
               iconColor: themeColors.onSurface,
               textMutedColor: colors.textMuted,
@@ -191,7 +215,9 @@ class ControlDashboardView extends StatelessWidget {
               maxVal: 0,
               step: 1,
               dialBaseImage: const AssetImage('assets/images/dial-base.png'),
-              indicatorImage: const AssetImage('assets/images/knob-indicator.png'),
+              indicatorImage: const AssetImage(
+                'assets/images/knob-indicator.png',
+              ),
               isDarkTheme: true,
               iconColor: themeColors.onSurface,
               textMutedColor: colors.textMuted,
@@ -221,11 +247,29 @@ class ControlDashboardView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildModalButton(context, "Attenuation", Icons.tune, themeColors, onOpenAttenuation),
+                  _buildModalButton(
+                    context,
+                    "Attenuation",
+                    Icons.tune,
+                    themeColors,
+                    onOpenAttenuation,
+                  ),
                   const SizedBox(height: 16),
-                  _buildModalButton(context, "Presets", Icons.save_alt, themeColors, onOpenPresets),
+                  _buildModalButton(
+                    context,
+                    "Presets",
+                    Icons.save_alt,
+                    themeColors,
+                    onOpenPresets,
+                  ),
                   const SizedBox(height: 16),
-                  _buildModalButton(context, "Remote", Icons.settings_remote, themeColors, onOpenRemote),
+                  _buildModalButton(
+                    context,
+                    "Remote",
+                    Icons.settings_remote,
+                    themeColors,
+                    onOpenRemote,
+                  ),
                 ],
               ),
             ),
@@ -268,7 +312,10 @@ class ControlDashboardView extends StatelessWidget {
                 // Header Label Plate
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: theme.brightness == Brightness.dark
                           ? const Color(0xFF131416)

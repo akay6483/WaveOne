@@ -7,17 +7,14 @@
 - **Routing:** `go_router` utilizing a `ShellRoute` to handle responsive navigation layouts.
 
 ## 2. Visual Paradigm: The "DAW Hardware" Aesthetic
-- The UI MUST mimic physical audio hardware (Ableton, Logic Pro, analog mixing desks).
-- **Widgets:** Use Neumorphism (`BoxShadow` arrays, `LinearGradient` borders) to create tactile knobs, recessed sliders, and metallic faceplates. No flat web styling.
-- **Feedback:** Use glowing LED effects (high-blur shadows with colors from `Theme.of(context).extension<LedColors>()`) for active states.
-- **Layouts:** Screens act as "Racks". Group components into distinct panels with subtle borders. Mobile = Vertical Rack stack. Desktop = Horizontal Mixing Desk.
+- The UI MUST mimic physical audio hardware.
+- **Widgets:** Use Neumorphism (`BoxShadow` arrays, `LinearGradient` borders) to create tactile knobs, recessed sliders, and metallic faceplates.
+- **Feedback:** Use glowing LED effects via `Theme.of(context).extension<LedColors>()`.
 
-## 3. Directory Boundaries
-- `lib/core/widgets/`: ONLY for shared, global components (e.g., generic knobs, sliders).
-- `lib/products/[product_name]/ui/screens/`: Routable Scaffold pages.
-- `lib/products/[product_name]/ui/widgets/`: Components strictly unique to a specific product.
+## 3. Directory Boundaries (STRICT COMPONENT ISOLATION)
+- `lib/core/widgets/`: **THE UNIVERSAL PARTS BIN.** ALL visual components (knobs, sliders, toggles, custom cards, DSP monitors) live here. There are NO product-specific widgets.
+- `lib/products/[product_name]/ui/screens/`: **THE CHASSIS.** These are the only files allowed in the product UI folders. They must be pure layout files (Scaffolds) that import components from `core/widgets/` and arrange them.
 
 ## 4. Coding Standards
-- Use sound null safety.
-- Prefer `StatelessWidget`.
+- Prefer `StatelessWidget`. All state is passed down from the Screen level.
 - Never mix BLoC/hardware logic inside widget `build()` methods.

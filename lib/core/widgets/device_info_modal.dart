@@ -70,8 +70,13 @@ class _DeviceInfoModalState extends State<DeviceInfoModal> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.close, color: themeColors.onSurface, size: 20),
-                    onPressed: widget.onClose ?? () => Navigator.of(context).pop(),
+                    icon: Icon(
+                      Icons.close,
+                      color: themeColors.onSurface,
+                      size: 20,
+                    ),
+                    onPressed:
+                        widget.onClose ?? () => Navigator.of(context).pop(),
                     constraints: const BoxConstraints(),
                     padding: EdgeInsets.zero,
                   ),
@@ -156,7 +161,9 @@ class _DeviceInfoModalState extends State<DeviceInfoModal> {
                             });
                           },
                           child: Icon(
-                            _showPassword ? Icons.visibility_off : Icons.visibility,
+                            _showPassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
                             color: themeColors.primary,
                             size: 18,
                           ),

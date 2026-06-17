@@ -112,7 +112,11 @@ class _RemoteModalState extends State<RemoteModal> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: IconButton(
-                      icon: Icon(Icons.close, color: themeColors.onSurface, size: 24),
+                      icon: Icon(
+                        Icons.close,
+                        color: themeColors.onSurface,
+                        size: 24,
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),

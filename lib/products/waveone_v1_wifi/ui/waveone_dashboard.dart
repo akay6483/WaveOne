@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:waveone/core/theme/app_theme.dart';
-import 'package:waveone/core/widgets/attenuation_modal.dart';
-import 'package:waveone/core/widgets/device_info_modal.dart';
-import 'package:waveone/core/widgets/help_modal.dart';
-import 'package:waveone/core/widgets/preset_modal.dart';
-import 'package:waveone/core/widgets/remote_modal.dart';
-import 'package:waveone/products/waveone_v1_wifi/ui/control_dashboard_view.dart';
-import 'package:waveone/products/waveone_v1_wifi/ui/device_connect_screen.dart';
-import 'package:waveone/products/waveone_v1_wifi/ui/main_navigation_shell.dart';
+import 'package:waveone/core/widgets/Knob.dart';
+import 'package:waveone/core/widgets/mode_selector.dart';
 
 class WaveOneDashboard extends StatefulWidget {
   const WaveOneDashboard({super.key});
@@ -17,205 +11,121 @@ class WaveOneDashboard extends StatefulWidget {
 }
 
 class _WaveOneDashboardState extends State<WaveOneDashboard> {
-  int _selectedIndex = 0;
+  // State variables for active mode and knob angle
+  // TODO: Refactor to BlocBuilder
+  String _activeMode = 'AUX1';
+  bool _isModeExpanded = true;
+  double _mainVolAngle = 225.0; // Start at min angle (225 degrees)
 
-  // Connection Mock State
-  ConnectionMode _connectionMode = ConnectionMode.wifi;
-  final List<DeviceUIModel> _availableDevices = [
-    const DeviceUIModel(
-      id: '1',
-      modelName: 'WaveOne PV',
-      deviceCode: 'W1-PV-1234',
-      ipAddress: '192.168.1.100',
-      isConnected: false,
-    ),
-  ];
-
-  // Control Dashboard Mock State
-  String _activeMode = 'Music';
-  bool _isModeExpanded = false;
-  double _mainVolAngle = 40.0;
-  double _subVolAngle = -5.0;
-
-  // Attenuation Mock State
-  double _frontLeftAngle = 0.0;
-  double _frontRightAngle = 0.0;
-  double _centerAngle = 0.0;
-  double _rearLeftAngle = 0.0;
-  double _rearRightAngle = 0.0;
-
-  // TODO: Refactor knob state/modal triggers to use WaveOneBloc.
-
-  void _onOpenAttenuation() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        final theme = Theme.of(context);
-        final isDark = theme.brightness == Brightness.dark;
-        final colors = theme.extension<AppColorsExtension>()!;
-
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return AttenuationModal(
-              onClose: () => Navigator.pop(context),
-              backgroundColor: theme.cardColor,
-              textColor: theme.colorScheme.onSurface,
-              iconColor: theme.iconTheme.color ?? colors.textMuted,
-              isDarkTheme: isDark,
-              frontLeftAngle: _frontLeftAngle,
-              frontLeftText: "${_frontLeftAngle.toInt()} dB",
-              onFrontLeftTurned: (newAngle, _) {
-                setModalState(() => _frontLeftAngle = newAngle);
-                setState(() => _frontLeftAngle = newAngle);
-              },
-              frontRightAngle: _frontRightAngle,
-              frontRightText: "${_frontRightAngle.toInt()} dB",
-              onFrontRightTurned: (newAngle, _) {
-                setModalState(() => _frontRightAngle = newAngle);
-                setState(() => _frontRightAngle = newAngle);
-              },
-              centerAngle: _centerAngle,
-              centerText: "${_centerAngle.toInt()} dB",
-              onCenterTurned: (newAngle, _) {
-                setModalState(() => _centerAngle = newAngle);
-                setState(() => _centerAngle = newAngle);
-              },
-              rearLeftAngle: _rearLeftAngle,
-              rearLeftText: "${_rearLeftAngle.toInt()} dB",
-              onRearLeftTurned: (newAngle, _) {
-                setModalState(() => _rearLeftAngle = newAngle);
-                setState(() => _rearLeftAngle = newAngle);
-              },
-              rearRightAngle: _rearRightAngle,
-              rearRightText: "${_rearRightAngle.toInt()} dB",
-              onRearRightTurned: (newAngle, _) {
-                setModalState(() => _rearRightAngle = newAngle);
-                setState(() => _rearRightAngle = newAngle);
-              },
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void _onOpenPresets() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => const PresetModal(),
-    );
-  }
-
-  void _onOpenRemote() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => RemoteModal(
-        onPower: () {},
-        onMute: () {},
-        onSetup: () {},
-        onVolUp: () {},
-        onVolDown: () {},
-        onPlayPause: () {},
-        onPrev: () {},
-        onNext: () {},
-        onEq: () {},
-        onRpt: () {},
-        onUsd: () {},
-        onDigit0: () {},
-        onDigit1: () {},
-        onDigit2: () {},
-        onDigit3: () {},
-        onDigit4: () {},
-        onDigit5: () {},
-        onDigit6: () {},
-        onDigit7: () {},
-        onDigit8: () {},
-        onDigit9: () {},
-      ),
-    );
-  }
-
-  Widget _buildChild() {
-    switch (_selectedIndex) {
-      case 0:
-        return DeviceConnectScreen(
-          availableDevices: _availableDevices,
-          activeMode: _connectionMode,
-          isScanning: false,
-          onModeChanged: (mode) {
-            setState(() {
-              _connectionMode = mode;
-            });
-          },
-          onDeviceSelected: (device) {},
-          // TODO: Refactor DeviceInfo state and network metadata to listen to WaveOneBloc.
-          onOpenInfo: () {
-            showDialog(
-              context: context,
-              builder: (context) => const DeviceInfoModal(),
-            );
-          },
-          onOpenHelp: () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (context) => const HelpModal(),
-            );
-          },
-        );
-      case 1:
-        return ControlDashboardView(
-          activeMode: _activeMode,
-          isModeExpanded: _isModeExpanded,
-          mainVolAngle: _mainVolAngle,
-          mainVolText: _mainVolAngle.toInt().toString(),
-          subVolAngle: _subVolAngle,
-          subVolText: _subVolAngle.toInt().toString(),
-          onMainVolTurned: (newAngle, newIndex) {
-            setState(() {
-              _mainVolAngle = newAngle;
-            });
-          },
-          onSubVolTurned: (newAngle, newIndex) {
-            setState(() {
-              _subVolAngle = newAngle;
-            });
-          },
-          onModeSelected: (mode) {
-            setState(() {
-              _activeMode = mode;
-              _isModeExpanded = false;
-            });
-          },
-          onToggleModeExpand: () {
-            setState(() {
-              _isModeExpanded = !_isModeExpanded;
-            });
-          },
-          onOpenAttenuation: _onOpenAttenuation,
-          onOpenPresets: _onOpenPresets,
-          onOpenRemote: _onOpenRemote,
-        );
-      case 2:
-        return const Center(child: Text('DSP View'));
-      default:
-        return const SizedBox.shrink();
-    }
+  int _getVolumePercentage(double angle) {
+    final relativeAngle = (angle - 225 + 360) % 360;
+    final percent = (relativeAngle / 270.0).clamp(0.0, 1.0);
+    return (percent * 100).round();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MainNavigationShell(
-      selectedIndex: _selectedIndex,
-      onTabSelected: (index) {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
-      child: _buildChild(),
+    final colors = Theme.of(context).extension<AppColorsExtension>()!;
+    final themeColors = Theme.of(context).colorScheme;
+    final mediaQuery = MediaQuery.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Constrain the knob size to roughly 50% of the screen width (min/max bounds for safety)
+    final double knobSize = (mediaQuery.size.width * 0.5).clamp(150.0, 300.0);
+
+    return Scaffold(
+      backgroundColor: themeColors.surface,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text('WaveOne V1'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.power_settings_new),
+            color: Colors.redAccent,
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Powering off device...')),
+              );
+            },
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20),
+
+              // Top Section (Main Volume Knob)
+              Center(
+                child: SizedBox(
+                  width: knobSize + 40,
+                  child: Knob(
+                    size: knobSize,
+                    label: 'Volume',
+                    valueText: '${_getVolumePercentage(_mainVolAngle)}%',
+                    currentAngle: _mainVolAngle,
+                    isDarkTheme: isDark,
+                    iconColor: themeColors.primary,
+                    textMutedColor: colors.textMuted,
+                    onKnobTurned: (newAngle, newIndex) {
+                      setState(() {
+                        // TODO: Refactor to BlocBuilder
+                        _mainVolAngle = newAngle;
+                      });
+                    },
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              // Middle Section (Status)
+              Text(
+                'Current Input: $_activeMode',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: colors.textMuted,
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              // Bottom Section (Mode Selectors)
+              // Wrap the ModeSelector in a constrained box to fit layout nicely
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: ModeSelector(
+                  currentMode: _activeMode,
+                  isExpanded: _isModeExpanded,
+                  onModeSelected: (mode) {
+                    setState(() {
+                      // TODO: Refactor to BlocBuilder
+                      _activeMode = mode;
+                    });
+                  },
+                  onToggleExpand: () {
+                    setState(() {
+                      _isModeExpanded = !_isModeExpanded;
+                    });
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

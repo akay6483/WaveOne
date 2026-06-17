@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waveone/products/waveone_v1_wifi/ui/waveone_dashboard.dart';
+import 'package:waveone/products/waveone_v1_wifi/ui/device_selection_screen.dart';
 
 class ProductSelectionScreen extends StatelessWidget {
   const ProductSelectionScreen({super.key});
@@ -29,7 +29,7 @@ class ProductSelectionScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const WaveOneDashboard(),
+                        builder: (context) => const DeviceSelectionScreen(),
                       ),
                     );
                   },

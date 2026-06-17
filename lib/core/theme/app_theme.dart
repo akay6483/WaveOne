@@ -69,7 +69,11 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       modalOverlay: Color.lerp(modalOverlay, other.modalOverlay, t)!,
       modalBackground: Color.lerp(modalBackground, other.modalBackground, t)!,
       remoteModalBg: Color.lerp(remoteModalBg, other.remoteModalBg, t)!,
-      remoteButtonText: Color.lerp(remoteButtonText, other.remoteButtonText, t)!,
+      remoteButtonText: Color.lerp(
+        remoteButtonText,
+        other.remoteButtonText,
+        t,
+      )!,
       remotePowerText: Color.lerp(remotePowerText, other.remotePowerText, t)!,
       remotePlayText: Color.lerp(remotePlayText, other.remotePlayText, t)!,
       remoteEqText: Color.lerp(remoteEqText, other.remoteEqText, t)!,
@@ -90,11 +94,7 @@ class LedColors extends ThemeExtension<LedColors> {
   });
 
   @override
-  ThemeExtension<LedColors> copyWith({
-    Color? green,
-    Color? red,
-    Color? amber,
-  }) {
+  ThemeExtension<LedColors> copyWith({Color? green, Color? red, Color? amber}) {
     return LedColors(
       green: green ?? this.green,
       red: red ?? this.red,
@@ -119,43 +119,43 @@ class LedColors extends ThemeExtension<LedColors> {
 
   /// High-blur glow effects simulating real physical LEDs
   List<BoxShadow> greenGlow({double blur = 8.0, double spread = 1.0}) => [
-        BoxShadow(
-          color: green.withValues(alpha: 0.6),
-          blurRadius: blur,
-          spreadRadius: spread,
-        ),
-        BoxShadow(
-          color: green.withValues(alpha: 0.2),
-          blurRadius: blur * 2,
-          spreadRadius: spread * 0.5,
-        ),
-      ];
+    BoxShadow(
+      color: green.withValues(alpha: 0.6),
+      blurRadius: blur,
+      spreadRadius: spread,
+    ),
+    BoxShadow(
+      color: green.withValues(alpha: 0.2),
+      blurRadius: blur * 2,
+      spreadRadius: spread * 0.5,
+    ),
+  ];
 
   List<BoxShadow> redGlow({double blur = 8.0, double spread = 1.0}) => [
-        BoxShadow(
-          color: red.withValues(alpha: 0.6),
-          blurRadius: blur,
-          spreadRadius: spread,
-        ),
-        BoxShadow(
-          color: red.withValues(alpha: 0.2),
-          blurRadius: blur * 2,
-          spreadRadius: spread * 0.5,
-        ),
-      ];
+    BoxShadow(
+      color: red.withValues(alpha: 0.6),
+      blurRadius: blur,
+      spreadRadius: spread,
+    ),
+    BoxShadow(
+      color: red.withValues(alpha: 0.2),
+      blurRadius: blur * 2,
+      spreadRadius: spread * 0.5,
+    ),
+  ];
 
   List<BoxShadow> amberGlow({double blur = 8.0, double spread = 1.0}) => [
-        BoxShadow(
-          color: amber.withValues(alpha: 0.6),
-          blurRadius: blur,
-          spreadRadius: spread,
-        ),
-        BoxShadow(
-          color: amber.withValues(alpha: 0.2),
-          blurRadius: blur * 2,
-          spreadRadius: spread * 0.5,
-        ),
-      ];
+    BoxShadow(
+      color: amber.withValues(alpha: 0.6),
+      blurRadius: blur,
+      spreadRadius: spread,
+    ),
+    BoxShadow(
+      color: amber.withValues(alpha: 0.2),
+      blurRadius: blur * 2,
+      spreadRadius: spread * 0.5,
+    ),
+  ];
 }
 
 /// ThemeExtension for skeletal DAW Hardware Panels and racks.
@@ -196,8 +196,16 @@ class HardwarePanelTheme extends ThemeExtension<HardwarePanelTheme> {
       return this;
     }
     return HardwarePanelTheme(
-      panelDecoration: BoxDecoration.lerp(panelDecoration, other.panelDecoration, t)!,
-      recessedDecoration: BoxDecoration.lerp(recessedDecoration, other.recessedDecoration, t)!,
+      panelDecoration: BoxDecoration.lerp(
+        panelDecoration,
+        other.panelDecoration,
+        t,
+      )!,
+      recessedDecoration: BoxDecoration.lerp(
+        recessedDecoration,
+        other.recessedDecoration,
+        t,
+      )!,
       panelColor: Color.lerp(panelColor, other.panelColor, t)!,
       borderColor: Color.lerp(borderColor, other.borderColor, t)!,
     );
@@ -247,10 +255,7 @@ class AppTheme {
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(4),
-        side: const BorderSide(
-          color: Color(0xFFCBD5E1),
-          width: 1,
-        ),
+        side: const BorderSide(color: Color(0xFFCBD5E1), width: 1),
       ),
     ),
 
@@ -350,10 +355,7 @@ class AppTheme {
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(4),
-        side: const BorderSide(
-          color: Color(0xFF2D3037),
-          width: 1,
-        ),
+        side: const BorderSide(color: Color(0xFF2D3037), width: 1),
       ),
     ),
 
@@ -375,7 +377,7 @@ class AppTheme {
       ),
       const LedColors(
         green: Color(0xFF39FF14), // Glowing neon green
-        red: Color(0xFFFF0055),   // Glowing warning red
+        red: Color(0xFFFF0055), // Glowing warning red
         amber: Color(0xFFFF9F0A), // Glowing amber
       ),
       HardwarePanelTheme(

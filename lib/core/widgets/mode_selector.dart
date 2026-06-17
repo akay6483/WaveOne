@@ -66,13 +66,19 @@ class ModeSelector extends StatelessWidget {
                   onTap: onToggleExpand,
                   behavior: HitTestBehavior.opaque,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 8,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // Header Label Plate
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
                             color: theme.brightness == Brightness.dark
                                 ? const Color(0xFF131416)
@@ -110,7 +116,10 @@ class ModeSelector extends StatelessWidget {
                   const SizedBox(height: 12),
                   Container(
                     decoration: hardwareTheme.recessedDecoration,
-                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 14,
+                      horizontal: 8,
+                    ),
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -122,7 +131,9 @@ class ModeSelector extends StatelessWidget {
                             onTap: () => onModeSelected(modeItem.label),
                             behavior: HitTestBehavior.opaque,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -133,10 +144,21 @@ class ModeSelector extends StatelessWidget {
                                     margin: const EdgeInsets.only(bottom: 8),
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: isSelected ? ledColors.green : ledColors.green.withValues(alpha: 0.2),
-                                      boxShadow: isSelected ? ledColors.greenGlow(blur: 6, spread: 1) : null,
+                                      color: isSelected
+                                          ? ledColors.green
+                                          : ledColors.green.withValues(
+                                              alpha: 0.2,
+                                            ),
+                                      boxShadow: isSelected
+                                          ? ledColors.greenGlow(
+                                              blur: 6,
+                                              spread: 1,
+                                            )
+                                          : null,
                                       border: Border.all(
-                                        color: isSelected ? Colors.white : Colors.black54,
+                                        color: isSelected
+                                            ? Colors.white
+                                            : Colors.black54,
                                         width: 0.5,
                                       ),
                                     ),
@@ -149,7 +171,9 @@ class ModeSelector extends StatelessWidget {
                                       child: Icon(
                                         modeItem.icon,
                                         size: 20,
-                                        color: isSelected ? primaryColor : inactiveColor,
+                                        color: isSelected
+                                            ? primaryColor
+                                            : inactiveColor,
                                       ),
                                     ),
                                   ),
@@ -159,8 +183,12 @@ class ModeSelector extends StatelessWidget {
                                     modeItem.label,
                                     style: TextStyle(
                                       fontSize: 11,
-                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                      color: isSelected ? primaryColor : textColor,
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.w500,
+                                      color: isSelected
+                                          ? primaryColor
+                                          : textColor,
                                     ),
                                   ),
                                 ],
