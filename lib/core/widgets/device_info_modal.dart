@@ -33,8 +33,10 @@ class _DeviceInfoModalState extends State<DeviceInfoModal> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<AppColorsExtension>()!;
-    final themeColors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.extension<AppColorsExtension>()!;
+    final themeColors = theme.colorScheme;
+    final hardwareTheme = theme.extension<HardwarePanelTheme>()!;
 
     // Select image based on model
     final imagePath = widget.deviceName.toLowerCase().contains('pv')
@@ -46,16 +48,8 @@ class _DeviceInfoModalState extends State<DeviceInfoModal> {
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: colors.modalBackground,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.25),
-              offset: const Offset(0, 4),
-              blurRadius: 10,
-            ),
-          ],
+        decoration: hardwareTheme.panelDecoration.copyWith(
+          borderRadius: BorderRadius.circular(10),
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -69,44 +63,47 @@ class _DeviceInfoModalState extends State<DeviceInfoModal> {
                   Text(
                     "Device Info",
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
                       color: themeColors.onSurface,
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.close, color: themeColors.onSurface),
-                    onPressed:
-                        widget.onClose ?? () => Navigator.of(context).pop(),
+                    icon: Icon(Icons.close, color: themeColors.onSurface, size: 20),
+                    onPressed: widget.onClose ?? () => Navigator.of(context).pop(),
                     constraints: const BoxConstraints(),
                     padding: EdgeInsets.zero,
                   ),
                 ],
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
               // --- Avatar ---
               Image.asset(
                 imagePath,
-                width: 80,
-                height: 80,
+                width: 70,
+                height: 70,
                 fit: BoxFit.contain,
               ),
+
+              const SizedBox(height: 16),
 
               // --- Details Section ---
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Details",
+                  "DETAILS",
                   style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    color: themeColors.onSurface,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
+                    color: themeColors.primary,
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
 
               _buildRow("Name", widget.deviceName, themeColors, colors),
               _buildRow("Device Mode", widget.deviceMode, themeColors, colors),
@@ -117,15 +114,16 @@ class _DeviceInfoModalState extends State<DeviceInfoModal> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Network",
+                  "NETWORK",
                   style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    color: themeColors.onSurface,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
+                    color: themeColors.primary,
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
 
               _buildRow("Wi-Fi Mode", widget.wifiMode, themeColors, colors),
               _buildRow("Router IP", widget.ipAddress, themeColors, colors),
@@ -138,14 +136,14 @@ class _DeviceInfoModalState extends State<DeviceInfoModal> {
                   children: [
                     Text(
                       "Password",
-                      style: TextStyle(fontSize: 16, color: colors.textMuted),
+                      style: TextStyle(fontSize: 14, color: colors.textMuted),
                     ),
                     Row(
                       children: [
                         Text(
                           _showPassword ? widget.password : "••••••••",
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500,
                             color: themeColors.onSurface,
                           ),
@@ -158,11 +156,9 @@ class _DeviceInfoModalState extends State<DeviceInfoModal> {
                             });
                           },
                           child: Icon(
-                            _showPassword
-                                ? Icons.visibility_off
-                                : Icons.visibility,
+                            _showPassword ? Icons.visibility_off : Icons.visibility,
                             color: themeColors.primary,
-                            size: 20,
+                            size: 18,
                           ),
                         ),
                       ],
@@ -196,11 +192,11 @@ class _DeviceInfoModalState extends State<DeviceInfoModal> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontSize: 16, color: colors.textMuted)),
+          Text(label, style: TextStyle(fontSize: 14, color: colors.textMuted)),
           Text(
             value,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
               color: themeColors.onSurface,
             ),

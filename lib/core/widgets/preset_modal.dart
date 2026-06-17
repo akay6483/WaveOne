@@ -88,16 +88,21 @@ class _PresetModalState extends State<PresetModal> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<AppColorsExtension>()!;
-    final themeColors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.extension<AppColorsExtension>()!;
+    final themeColors = theme.colorScheme;
     final screenHeight = MediaQuery.sizeOf(context).height;
+    final hardwareTheme = theme.extension<HardwarePanelTheme>()!;
 
     return Container(
       decoration: BoxDecoration(
         color: colors.modalBackground,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+        border: Border(
+          top: BorderSide(color: hardwareTheme.borderColor, width: 1),
         ),
       ),
       child: SafeArea(
@@ -126,7 +131,7 @@ class _PresetModalState extends State<PresetModal> {
                       "Presets",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 20,
                         fontWeight: FontWeight.w700,
                         color: themeColors.onSurface,
                       ),
@@ -139,7 +144,7 @@ class _PresetModalState extends State<PresetModal> {
                       child: IconButton(
                         icon: Icon(
                           Icons.close,
-                          size: 26,
+                          size: 24,
                           color: themeColors.onSurface,
                         ),
                         onPressed: () => Navigator.of(context).pop(),
@@ -289,7 +294,7 @@ class _PresetModalState extends State<PresetModal> {
                                 Text(
                                   preset.name,
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w500,
                                     color: themeColors.onSurface,
                                   ),
@@ -298,13 +303,13 @@ class _PresetModalState extends State<PresetModal> {
                                   Icon(
                                     Icons.download,
                                     color: themeColors.primary,
-                                    size: 20,
+                                    size: 18,
                                   ),
                                 if (_activeTab == PresetTab.delete)
                                   Icon(
                                     Icons.delete,
                                     color: themeColors.error,
-                                    size: 20,
+                                    size: 18,
                                   ),
                               ],
                             ),
@@ -335,9 +340,9 @@ class _PresetModalState extends State<PresetModal> {
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
             color: isActive
-                ? themeColors.primary.withOpacity(0.1)
-                : themeColors.surfaceContainerHighest.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(10),
+                ? themeColors.primary.withValues(alpha: 0.1)
+                : themeColors.surfaceContainerHighest.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isActive ? themeColors.primary : Colors.transparent,
               width: 1,
@@ -355,7 +360,7 @@ class _PresetModalState extends State<PresetModal> {
                 label,
                 style: TextStyle(
                   color: isActive ? themeColors.primary : colors.textMuted,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),

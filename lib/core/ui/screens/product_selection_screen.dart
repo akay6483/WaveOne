@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:waveone/core/theme/responsive_layout.dart';
 import 'package:waveone/products/waveone_v1_wifi/ui/waveone_dashboard.dart';
 
 class ProductSelectionScreen extends StatelessWidget {

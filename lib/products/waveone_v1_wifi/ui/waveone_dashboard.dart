@@ -200,7 +200,7 @@ class _WaveOneDashboardState extends State<WaveOneDashboard> {
           onOpenRemote: _onOpenRemote,
         );
       case 2:
-        return Container(child: const Center(child: Text('DSP View')));
+        return const Center(child: Text('DSP View'));
       default:
         return const SizedBox.shrink();
     }

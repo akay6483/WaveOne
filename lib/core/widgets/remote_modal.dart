@@ -68,13 +68,17 @@ class _RemoteModalState extends State<RemoteModal> {
     final theme = Theme.of(context);
     final colors = theme.extension<AppColorsExtension>()!;
     final themeColors = theme.colorScheme;
+    final hardwareTheme = theme.extension<HardwarePanelTheme>()!;
 
     return Container(
       decoration: BoxDecoration(
         color: colors.remoteModalBg,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        border: Border(
+          top: BorderSide(color: hardwareTheme.borderColor, width: 1),
+        ),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 10),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -98,7 +102,7 @@ class _RemoteModalState extends State<RemoteModal> {
                     "Remote",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: themeColors.onSurface,
                     ),
@@ -108,7 +112,7 @@ class _RemoteModalState extends State<RemoteModal> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: IconButton(
-                      icon: Icon(Icons.close, color: themeColors.onSurface),
+                      icon: Icon(Icons.close, color: themeColors.onSurface, size: 24),
                       onPressed: () => Navigator.of(context).pop(),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
@@ -318,7 +322,6 @@ class _RemoteButton extends StatelessWidget {
       case RemoteButtonType.purple:
         return 'assets/images/button-purple.png';
       case RemoteButtonType.defaultBtn:
-      default:
         return 'assets/images/button-default.png';
     }
   }

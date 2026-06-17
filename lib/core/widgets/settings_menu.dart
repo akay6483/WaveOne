@@ -186,7 +186,7 @@ class SettingsMenu extends StatelessWidget {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: themeColors.primary,
+            activeThumbColor: themeColors.primary,
             inactiveTrackColor: colors.inactiveTint,
             thumbColor: WidgetStateProperty.resolveWith((states) {
               return colors.thumbColor;

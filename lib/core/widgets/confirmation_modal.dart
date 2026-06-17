@@ -24,8 +24,10 @@ class ConfirmationModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Fetch theme colors
-    final colors = Theme.of(context).extension<AppColorsExtension>()!;
-    final themeColors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.extension<AppColorsExtension>()!;
+    final themeColors = theme.colorScheme;
+    final hardwareTheme = theme.extension<HardwarePanelTheme>()!;
 
     // Use the passed-in color, or default to the primary theme color
     final finalConfirmColor = confirmButtonColor ?? themeColors.primary;
@@ -35,17 +37,9 @@ class ConfirmationModal extends StatelessWidget {
       elevation: 0,
       insetPadding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: Container(
-        padding: const EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          color: colors.modalBackground,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.25),
-              offset: const Offset(0, 2),
-              blurRadius: 4,
-            ),
-          ],
+        padding: const EdgeInsets.all(22.0),
+        decoration: hardwareTheme.panelDecoration.copyWith(
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min, // Wrap content tightly
@@ -55,19 +49,24 @@ class ConfirmationModal extends StatelessWidget {
               title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
                 color: themeColors.onSurface,
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
 
             // --- Message ---
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: colors.textMuted),
+              style: TextStyle(
+                fontSize: 14,
+                color: colors.textMuted,
+                height: 1.4,
+              ),
             ),
 
             const SizedBox(height: 24),
@@ -80,9 +79,9 @@ class ConfirmationModal extends StatelessWidget {
                   child: TextButton(
                     onPressed: onCancel,
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(6),
                         side: BorderSide(
                           color: themeColors.surfaceContainerHighest,
                         ),
@@ -91,7 +90,7 @@ class ConfirmationModal extends StatelessWidget {
                     child: Text(
                       "Cancel",
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: themeColors.onSurface,
                       ),
@@ -107,16 +106,16 @@ class ConfirmationModal extends StatelessWidget {
                     onPressed: onConfirm,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: finalConfirmColor,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                     ),
                     child: Text(
                       confirmButtonLabel,
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
